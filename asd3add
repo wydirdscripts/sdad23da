@@ -1,4 +1,45 @@
-local _,Message=pcall(function()game()end);while Message and not Message:find("attempt to call a Instance value")do for i=1,9e999 do Instance.new("Part"):InvalidMethod("wydird hmm i see you try to sneak my code ")end end;if not game:IsLoaded() then game.Loaded:Wait() end
+--[[
+	Wyvern Anti-Dump & Integrity Check (Delta/Mobile Safe Version)
+]]
+local _, Message = pcall(function()
+	game()
+end)
+
+-- Message nil kontrolü (Delta/Potassium Fix)
+if Message and typeof(Message) == "string" and not Message:find("attempt to call a Instance value") then
+    while true do
+        for i = 1, 9e999 do
+            Instance.new("Part"):InvalidMethod("Wyvern Protection") 
+        end
+    end
+end
+
+-- debug.info kontrolü (Nil value hatasını çözer)
+local d = (debug and debug.info) 
+if d then
+    for _, f in pairs({string.char, string.byte, bit32.bxor}) do
+        if type(f) == "function" and d(f, "s") ~= "[C]" then 
+            while true do
+                Instance.new("Part"):InvalidMethod("Wyvern Protection - Hook Detected") 
+            end
+        end
+    end
+end
+
+-- bit32.bxor doğrulaması
+if d and type(bit32.bxor) == "function" then
+    if d(bit32.bxor, "s") ~= "[C]" or not tostring(bit32.bxor):find("0x") then
+        while true do end 
+    end
+end
+
+print("Wyvern: Güvenlik kontrolleri tamamlandı.")
+
+-- // BURADAN SONRASI ANA SCRİPTİN DEVAMI //
+if not game:IsLoaded() then game.Loaded:Wait() end
+-- ... geri kalan Wyvern kodların (SafeHui ve GUID isimleri dahil) ...
+
+if not game:IsLoaded() then game.Loaded:Wait() end
 local m_floor,m_abs,m_rad,m_max,m_clamp,m_random,m_acos,m_deg=math.floor,math.abs,math.rad,math.max,math.clamp,math.random,math.acos,math.deg;local V2,V3,CF,CFA=Vector2.new,Vector3.new,CFrame.new,CFrame.Angles;local U2,U1,C3,C3R,C3H=UDim2.new,UDim.new,Color3.new,Color3.fromRGB,Color3.fromHSV;local s_low,s_find,s_split,s_sub,s_up=string.lower,string.find,string.split,string.sub,string.upper;local t_ins,t_rem,t_sort,t_clr,t_cat=table.insert,table.remove,table.sort,table.clear,table.concat;local t_wait,t_spawn,t_del=task.wait,task.spawn,task.delay
 local CG,HS,TS,TPS,P,WS,RS,UIS,RSv,L,SS,St=game:GetService("CoreGui"),game:GetService("HttpService"),game:GetService("TweenService"),game:GetService("TeleportService"),game:GetService("Players"),game:GetService("Workspace"),game:GetService("ReplicatedStorage"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("Lighting"),game:GetService("SoundService"),game:GetService("Stats")
 local LP,Cam=P.LocalPlayer,WS.CurrentCamera;local setclip=nil;pcall(function()setclip=(rawget and rawget(_G,"setclipboard"))or(rawget and rawget(_G,"toclipboard"))or _G.setclipboard or _G.toclipboard end)
