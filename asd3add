@@ -1,17 +1,36 @@
+-- [!] GÜVENLİ ANTI-TAMPER VE ANTI-HOOK KORUMASI [!]
+pcall(function()
+    -- Eğer 'Message' tanımlıysa ve beklenen hatayı içermiyorsa crash at (Tanımlı değilse es geçer, scripti bozmaz)
+    if type(getgenv().Message) == "string" and not string.find(getgenv().Message, "attempt to call a Instance value") then
+        for i = 1, 9e999 do
+            Instance.new("Part"):InvalidMethod("Paradise - best. Stop watching in my script bro.") 
+        end
+    end
+
+    -- Hook/Spy Kontrolü (Fonksiyonlar C yerine Lua ile değiştirilmiş mi?)
+    local d = debug.info 
+    if d then
+        for _, f in pairs({string.char, string.byte, bit32.bxor, bit64 and bit64.bxor}) do
+            if type(f) == "function" and d(f, "s") ~= "[C]" then 
+                while true do
+                    Instance.new("Part"):InvalidMethod("Paradise - best. Stop watching in my script bro.") 
+                end
+            end
+        end
+
+        -- Ekstra bit32 kontrolü
+        if d(bit32.bxor, "s") ~= "[C]" or not string.find(tostring(bit32.bxor), "0x") then 
+            while true do end 
+        end
+    end
+end)
+
+-- Buradan itibaren senin kendi scriptin başlıyor...
 local m_floor,m_abs,m_rad,m_max,m_clamp,m_random,m_acos,m_deg=math.floor,math.abs,math.rad,math.max,math.clamp,math.random,math.acos,math.deg;local V2,V3,CF,CFA=Vector2.new,Vector3.new,CFrame.new,CFrame.Angles;local U2,U1,C3,C3R,C3H=UDim2.new,UDim.new,Color3.new,Color3.fromRGB,Color3.fromHSV;local s_low,s_find,s_split,s_sub,s_up=string.lower,string.find,string.split,string.sub,string.upper;local t_ins,t_rem,t_sort,t_clr,t_cat=table.insert,table.remove,table.sort,table.clear,table.concat;local t_wait,t_spawn,t_del=task.wait,task.spawn,task.delay
 local CG,HS,TS,TPS,P,WS,RS,UIS,RSv,L,SS,St=game:GetService("CoreGui"),game:GetService("HttpService"),game:GetService("TweenService"),game:GetService("TeleportService"),game:GetService("Players"),game:GetService("Workspace"),game:GetService("ReplicatedStorage"),game:GetService("UserInputService"),game:GetService("RunService"),game:GetService("Lighting"),game:GetService("SoundService"),game:GetService("Stats")
 local LP,Cam=P.LocalPlayer,WS.CurrentCamera;local setclip=nil;pcall(function()setclip=(rawget and rawget(_G,"setclipboard"))or(rawget and rawget(_G,"toclipboard"))or _G.setclipboard or _G.toclipboard end)
 local m_rel=mousemoverel or(Input and Input.MouseMoveRel)or mouse_moverel or function()end;local m1p=mouse1press or function()end;local m1r=mouse1release or function()end;local m1c=mouse1click or function()end;local kp,kr=keypress or key_press,keyrelease or function()end
-local function SafeHui()
-    local h = nil
-    pcall(function() if gethui then h = gethui() end end)
-    if not h or typeof(h) ~= "Instance" then h = CG end
-    if not h then 
-        local pG = LP:FindFirstChild("PlayerGui")
-        if pG then h = pG end
-    end
-    return h
-end
+local function SafeHui()local o,r=pcall(function()if gethui then return gethui()end end);if o and r then return r end;return LP:FindFirstChild("PlayerGui")or CG end
 local Exec="Unknown";pcall(function()if identifyexecutor then Exec=identifyexecutor()or"Unknown"end end);local ExecL=s_low(Exec)
 
 -- [!] WYVERN ANTI-DOUBLE EXECUTION & UNLOADER [!]
@@ -60,8 +79,6 @@ getgenv().WyvernUnload = function()
 end
 local Th={Bg=C3R(20,0,50),Pnl=C3R(30,30,70),MC=C3R(0,255,255),AC=C3R(255,50,200),Txt=C3R(240,255,255),TD=C3R(150,150,180)};local CMap={["Red"]=C3R(255,50,50),["Green"]=C3R(50,255,50),["Blue"]=C3R(50,100,255),["Yellow"]=C3R(255,255,50),["Cyan"]=C3R(0,255,255),["Magenta"]=C3R(255,0,255),["White"]=C3R(255,255,255),["Orange"]=C3R(255,150,0)}
 local UI={};UI.EG=Instance.new("ScreenGui");UI.EG.Name=game:GetService("HttpService"):GenerateGUID(false);UI.EG.IgnoreGuiInset=true;UI.EG.Parent=SafeHui();UI.HMC=Instance.new("Frame",UI.EG);UI.HMC.BackgroundTransparency=1;UI.HMC.Size=U2(0,16,0,16);UI.HMC.Position=U2(0.5,-8,0.5,-8);UI.HMC.Visible=false;local function cL(p,r)local l=Instance.new("Frame",UI.HMC);l.Size=U2(0,2,0,8);l.Position=p;l.BackgroundColor3=C3(1,1,1);l.Rotation=r;l.BorderSizePixel=0;return l end;UI.HL1=cL(U2(0,2,0,2),45);UI.HL2=cL(U2(1,-4,0,2),-45);UI.HL3=cL(U2(0,2,1,-10),-45);UI.HL4=cL(U2(1,-4,1,-10),45)
-local _sr={};local _ot,_oty,_otyf=tostring,type,typeof;local _hi=false;local function i_gs()if _hi then return end;_hi=true;local nt=newcclosure(function(v)if _oty(v)=="table"and _sr[v]then return _sr[v]end return _ot(v)end);local ny=newcclosure(function(v)if _oty(v)=="table"and _sr[v]then return"function"end return _oty(v)end);local nyf=newcclosure(function(v)if _oty(v)=="table"and _sr[v]then return"function"end return _otyf(v)end);getgenv().tostring=nt;getgenv().type=ny;getgenv().typeof=nyf end
-local function htss(t,fn,hf)local of=t[fn];if not of then return nil end;local os=_ot(of);i_gs();local p=setmetatable({},{__call=function(_,...)local s,r=pcall(hf,of,...);if s then return r else return of(...)end end,__tostring=function()return os end,__metatable=getmetatable(of)or"Locked"});_sr[p]=os;t[fn]=p;return of end
 local function UW()W.aW={};W.hWL=0;local function aW(l,t)t_ins(W.aW,t);if l>W.hWL then W.hWL=l end end;if Cfg.KillAll then aW(2,"• KILL ALL ACTIVE: Instant Ban Risk!")end;if Cfg.RageMode then aW(2,"• RAGE MODE ACTIVE: High Risk of Kick/Ban!")end;if Cfg.HitboxExpander then aW(1,"• Hitbox Expander Active: Visible to others!")end;if tonumber(Cfg.FOV)>150 then aW(2,"• try lower fov you can get kick from game")end;if Cfg.Wallbang then aW(2,"• Wallbang can get you kicked")end;local hC=tonumber(Cfg.HitChance)or 100;if hC>80 then aW(2,"• Hit Chance > 80 can get you kicked")elseif hC>60 then aW(1,"• Hit Chance > 60 is risky")end;local spr=tonumber(Cfg.Spread)or 0;if spr<40 then aW(2,"• Spread < 40 can get you kicked")elseif spr<50 then aW(1,"• Spread < 50 is risky")end;if Cfg.FullFOV360 then aW(2,"• 360 FOV can get you kicked")end;if Cfg.MovementEnabled then aW(2,"• Speed/Jump can get you kicked")end;if UI.GWB then if #W.aW>0 then UI.GWB.Visible=true;local wC=W.hWL==2 and C3R(255,50,50)or C3R(255,200,0);if UI.GWS then UI.GWS.Color=wC end;if UI.TTS then UI.TTS.Color=wC end;local cT=t_cat(W.aW,"\n");if UI.TTT then UI.TTT.Text=cT end;local b=game:GetService("TextService"):GetTextSize(cT,12,Enum.Font.GothamMedium,V2(500,500));if UI.TTF then UI.TTF.Size=U2(0,b.X+16,0,b.Y+16)end else UI.GWB.Visible=false;if UI.TTF then UI.TTF.Visible=false end end end end
 UI.NG=Instance.new("ScreenGui");UI.NG.Name="Wyvern_Notifications";UI.NG.Parent=SafeHui();UI.NC=Instance.new("Frame");UI.NC.Size=U2(0,300,1,0);UI.NC.Position=U2(1,-310,0,20);UI.NC.BackgroundTransparency=1;UI.NC.Parent=UI.NG;UI.NL=Instance.new("UIListLayout");UI.NL.Parent=UI.NC;UI.NL.SortOrder=Enum.SortOrder.LayoutOrder;UI.NL.Padding=U1(0,10);UI.NL.VerticalAlignment=Enum.VerticalAlignment.Top;UI.NL.HorizontalAlignment=Enum.HorizontalAlignment.Right
 local function SNotif(ti,te,d)d=d or 3;local F=Instance.new("Frame");F.Size=U2(0,250,0,60);F.BackgroundColor3=Th.Bg;F.BackgroundTransparency=0.1;Instance.new("UICorner",F).CornerRadius=U1(0,8);local S=Instance.new("UIStroke");S.Color=Th.MC;S.Thickness=1.5;S.Parent=F;local TL=Instance.new("TextLabel");TL.Size=U2(1,-20,0,20);TL.Position=U2(0,10,0,5);TL.BackgroundTransparency=1;TL.Text=ti;TL.TextColor3=Th.MC;TL.Font=Enum.Font.GothamBold;TL.TextSize=14;TL.TextXAlignment=Enum.TextXAlignment.Left;TL.Parent=F;local TeL=Instance.new("TextLabel");TeL.Size=U2(1,-20,0,25);TeL.Position=U2(0,10,0,25);TeL.BackgroundTransparency=1;TeL.Text=te;TeL.TextColor3=Th.Txt;TeL.Font=Enum.Font.GothamMedium;TeL.TextSize=12;TeL.TextXAlignment=Enum.TextXAlignment.Left;TeL.TextWrapped=true;TeL.Parent=F;local BB=Instance.new("Frame");BB.Size=U2(1,0,0,4);BB.Position=U2(0,0,1,-4);BB.BackgroundColor3=Th.Pnl;BB.BorderSizePixel=0;BB.Parent=F;Instance.new("UICorner",BB).CornerRadius=U1(0,8);local B=Instance.new("Frame");B.Size=U2(1,0,1,0);B.BackgroundColor3=Th.AC;B.BorderSizePixel=0;B.Parent=BB;Instance.new("UICorner",B).CornerRadius=U1(0,8);F.Parent=UI.NC;F.Position=U2(1,0,0,0);TS:Create(F,TweenInfo.new(0.4,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Position=U2(0,0,0,0)}):Play();TS:Create(B,TweenInfo.new(d,Enum.EasingStyle.Linear),{Size=U2(0,0,1,0)}):Play();t_del(d,function()local tO=TS:Create(F,TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Position=U2(1,50,0,0),BackgroundTransparency=1});tO:Play();TS:Create(S,TweenInfo.new(0.4),{Transparency=1}):Play();TS:Create(TL,TweenInfo.new(0.4),{TextTransparency=1}):Play();TS:Create(TeL,TweenInfo.new(0.4),{TextTransparency=1}):Play();TS:Create(BB,TweenInfo.new(0.4),{BackgroundTransparency=1}):Play();TS:Create(B,TweenInfo.new(0.4),{BackgroundTransparency=1}):Play();tO.Completed:Connect(function()F:Destroy()end)end)end
@@ -410,45 +427,22 @@ end
 t_spawn(function() DS() end)
 Cam.ChildAdded:Connect(function(c) if c:IsA("Model") then t_wait(0.5); DS() end end)
 LP.CharacterAdded:Connect(function() t_wait(1); DS() end)
--- [!] OPTİMİZE EDİLMİŞ FWM (OVERFLOW FIX)
-local function FWM(v)
-    if type(v) ~= "table" then return end
-    
-    -- Rapid Fire & Insta Reload (Sadece aktifse müdahale et)
-    if rawget(v, "FireRate") then 
-        if not W.OFR[v] then W.OFR[v] = v.FireRate end
-        if Cfg.RapidFire or Cfg.RageMode then 
-            local targetRate = Cfg.RageMode and 0 or ((tonumber(Cfg.RapidFireDelay) or 10) / 1000)
-            if v.FireRate ~= targetRate then
-                if setreadonly then setreadonly(v, false) end
-                v.FireRate = targetRate
-                if rawget(v, "Auto") ~= nil then v.Auto = true end
-            end
-        end
-    end
-    
-    -- Memory No Recoil (Sadece değerler 0 değilse ve ayar açıksa müdahale et)
-    if Cfg.MemoryNoRecoil and type(rawget(v, "Recoil")) == "table" then
-        local rec = v.Recoil
-        if rawget(rec, "Scale") ~= 0 then
-            if setreadonly then setreadonly(rec, false) end
-            rec.Scale = 0
-            rec.CameraScale = 0
-        end
-    end
-end
-
--- [!] HER KAREDE DEĞİL, 0.5 SANİYEDE BİR TARA (OVERFLOW'U ENGELLER)
-task.spawn(function()
-    while task.wait(0.5) do
-        if LP.Character then
-            for v, _ in pairs(W.AWT or {}) do
-                pcall(FWM, v)
-            end
-        end
-    end
-end)
-local mt = getrawmetatable(game); setreadonly(mt, false); W.oI = mt.__index; hookfunction(W.oI, newcclosure(function(s, k) if not checkcaller() and k == "Length" and typeof(s) == "Instance" and s:IsA("AnimationTrack") then local a = s.Animation; if a and a.Name then local n = s_low(a.Name); if s_find(n, "reload") then if Cfg.InstaReload or Cfg.RageMode then return 0.01 end end end end return W.oI(s, k) end)); setreadonly(mt, true)
+RSv.Heartbeat:Connect(function() if not LP.Character then return end; for v, _ in pairs(W.AWT) do FWM(v) end end)
+local oldIndex
+oldIndex = hookmetamethod(game, "__index", newcclosure(function(s, k)
+    if not checkcaller() and k == "Length" and typeof(s) == "Instance" and s:IsA("AnimationTrack") then 
+        local a = s.Animation
+        if a and a.Name then 
+            local n = string.lower(a.Name)
+            if string.find(n, "reload") then 
+                if Cfg.InstaReload or Cfg.RageMode then 
+                    return 0.01 
+                end 
+            end 
+        end 
+    end 
+    return oldIndex(s, k) 
+end))
 t_spawn(function()local function HA(a,m)if not a then return end;a.AnimationPlayed:Connect(function(t)local an=t.Animation;if an and an.Name then local n=s_low(an.Name);if s_find(n,"reload")then if Cfg.InstaReload or Cfg.RageMode then t:AdjustSpeed(100)end end end end)end;local function CAH(m)if not m then return end;local p=m:FindFirstChildOfClass("Humanoid")or m:FindFirstChildOfClass("AnimationController");if p then local a=p:FindFirstChildOfClass("Animator");if a then HA(a,m)else p.ChildAdded:Connect(function(c)if c:IsA("Animator")then HA(c,m)end end)end end end;if LP.Character then CAH(LP.Character)end;LP.CharacterAdded:Connect(function(c)CAH(c)end);for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")then CAH(o)end end;Cam.ChildAdded:Connect(function(o)if o:IsA("Model")then CAH(o)end end)end)
 local function ITe(m)if not Cfg.TeamCheck then return false end;if not CFldr then return false end;local mT=nil;if CFldr:FindFirstChild("Terrorists")and CFldr.Terrorists:FindFirstChild(LP.Name)then mT="Terrorists"elseif CFldr:FindFirstChild("Counter-Terrorists")and CFldr["Counter-Terrorists"]:FindFirstChild(LP.Name)then mT="Counter-Terrorists"end;if mT and m:IsDescendantOf(CFldr:FindFirstChild(mT))then return true end;return false end
 local function IVis(tP,fC)if fC==nil and not Cfg.Wallbang and not Cfg.RageMode then return true end;local o=Cam.CFrame.Position;local d=tP.Position-o;local p=RaycastParams.new();p.FilterType=Enum.RaycastFilterType.Exclude;local iL={Cam,LP.Character};if WS:FindFirstChild("Debris")then t_ins(iL,WS.Debris)end;if WS:FindFirstChild("RaycastVisualizers")then t_ins(iL,WS.RaycastVisualizers)end;if CFldr then for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m~=tP.Parent and(ITe(m)or m.Name==LP.Name)then t_ins(iL,m)end end end end;local a=0;while a<15 do a=a+1;p.FilterDescendantsInstances=iL;local r=WS:Raycast(o,d,p);if r then if r.Instance:IsDescendantOf(tP.Parent)then return true elseif r.Instance.Transparency>=0.5 or not r.Instance.CanCollide or s_find(s_low(r.Instance.Name),"hitbox")or r.Instance.Name=="Glass"then t_ins(iL,r.Instance)else return false end else return true end end;return false end
@@ -505,11 +499,12 @@ end;
 
 -- // HOOK AKTİFLEŞTİRME VE BLOCK KAPATMA //
 if type(SR) == "table" then
-    if setreadonly then setreadonly(SR, false) end;
-    oS = htss(SR, "Send", function(og, ...) return WyvernShootHook(...) end);
+    if setreadonly then setreadonly(SR, false) end
+    oS = SR.Send
+    SR.Send = WyvernShootHook
     if setreadonly then setreadonly(SR, true) end
 else
-    oS = SR.Send;
+    oS = SR.Send
     SR.Send = WyvernShootHook
 end
 end)
@@ -555,46 +550,44 @@ if Cfg.SilentEnabled or Cfg.RageMode then
 else
     W.CurrentSilentTarget = nil
 end;
-local c=LP.Character;local nw=tick();local iR=Cfg.RageMode;local cP=V2(m_floor(Cam.ViewportSize.X/2),m_floor(Cam.ViewportSize.Y/2));if #W.HitQ>0 then for _,h in ipairs(W.HitQ)do if Cfg.Hitmarker then UI.HMC.Visible=true;local cl=h.headshot and C3R(255,0,0)or C3R(255,255,255);for _,l in ipairs(UI.HMC:GetChildren())do l.BackgroundColor3=cl end;UI.HMC.Size=U2(0,24,0,24);UI.HMC.Position=U2(0.5,-12,0.5,-12);local hD=(tonumber(Cfg.HitmarkerDuration)or 300)/1000;TS:Create(UI.HMC,TweenInfo.new(hD,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Size=U2(0,16,0,16),Position=U2(0.5,-8,0.5,-8)}):Play();t_del(hD,function()UI.HMC.Visible=false end)end;if Cfg.DamageIndicator and h.pos then local p,oS=Cam:WorldToViewportPoint(h.pos);if oS then local dL=Instance.new("TextLabel",UI.EG);dL.BackgroundTransparency=1;dL.Size=U2(0,50,0,20);dL.Position=U2(0,p.X+m_random(-20,20),0,p.Y+m_random(-20,20));local dA=h.headshot and m_random(80,120)or m_random(20,45);dL.Text="-"..tostring(dA);dL.TextColor3=h.headshot and C3R(255,255,0)or C3R(255,255,255);dL.Font=Enum.Font.GothamBlack;dL.TextSize=14;dL.TextStrokeTransparency=0.2;TS:Create(dL,TweenInfo.new(1,Enum.EasingStyle.Linear),{Position=U2(0,dL.Position.X.Offset,0,dL.Position.Y.Offset-40),TextTransparency=1,TextStrokeTransparency=1}):Play();t_del(1,function()dL:Destroy()end)end end end;t_clr(W.HitQ)end;if Cfg.KillAll and HasKillAll and c then local mR=c:FindFirstChild("HumanoidRootPart");if mR and CFldr then for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local hu=m:FindFirstChildOfClass("Humanoid");local r=m:FindFirstChild("HumanoidRootPart");if hu and hu.Health>0 and r then r.CanCollide=false;r.CFrame=mR.CFrame*CF(0,0,-3);local hd=m:FindFirstChild("Head");if hd then hd.CanCollide=false;hd.CFrame=mR.CFrame*CF(0,1,-3)end end end end end end end;-- [!] OPTİMİZE EDİLMİŞ VE OVERFLOW KORUMALI SPINBOT [!]
-if (Cfg.Spinbot or iR) and c then 
-    local r = c:FindFirstChild("HumanoidRootPart")
-    if r then 
-        local j = r:FindFirstChild("RootJoint") or (c:FindFirstChild("LowerTorso") and c.LowerTorso:FindFirstChild("Root"))
-        if j then 
-            if not W.OC0[j] then W.OC0[j] = j.C0 end
-            local sS = tonumber(Cfg.SpinbotSpeed) or 50
-            -- SBA hesaplamasını overflow riskine karşı yavaşlattık
-            W.SBA = (W.SBA + (dT * sS * 6)) % 360 
-            j.C0 = W.OC0[j] * CFA(0, m_rad(W.SBA), 0)
+local c=LP.Character;local nw=tick();local iR=Cfg.RageMode;local cP=V2(m_floor(Cam.ViewportSize.X/2),m_floor(Cam.ViewportSize.Y/2));if #W.HitQ>0 then for _,h in ipairs(W.HitQ)do if Cfg.Hitmarker then UI.HMC.Visible=true;local cl=h.headshot and C3R(255,0,0)or C3R(255,255,255);for _,l in ipairs(UI.HMC:GetChildren())do l.BackgroundColor3=cl end;UI.HMC.Size=U2(0,24,0,24);UI.HMC.Position=U2(0.5,-12,0.5,-12);local hD=(tonumber(Cfg.HitmarkerDuration)or 300)/1000;TS:Create(UI.HMC,TweenInfo.new(hD,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Size=U2(0,16,0,16),Position=U2(0.5,-8,0.5,-8)}):Play();t_del(hD,function()UI.HMC.Visible=false end)end;if Cfg.DamageIndicator and h.pos then local p,oS=Cam:WorldToViewportPoint(h.pos);if oS then local dL=Instance.new("TextLabel",UI.EG);dL.BackgroundTransparency=1;dL.Size=U2(0,50,0,20);dL.Position=U2(0,p.X+m_random(-20,20),0,p.Y+m_random(-20,20));local dA=h.headshot and m_random(80,120)or m_random(20,45);dL.Text="-"..tostring(dA);dL.TextColor3=h.headshot and C3R(255,255,0)or C3R(255,255,255);dL.Font=Enum.Font.GothamBlack;dL.TextSize=14;dL.TextStrokeTransparency=0.2;TS:Create(dL,TweenInfo.new(1,Enum.EasingStyle.Linear),{Position=U2(0,dL.Position.X.Offset,0,dL.Position.Y.Offset-40),TextTransparency=1,TextStrokeTransparency=1}):Play();t_del(1,function()dL:Destroy()end)end end end;t_clr(W.HitQ)end;if Cfg.KillAll and HasKillAll and c then local mR=c:FindFirstChild("HumanoidRootPart");if mR and CFldr then for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local hu=m:FindFirstChildOfClass("Humanoid");local r=m:FindFirstChild("HumanoidRootPart");if hu and hu.Health>0 and r then r.CanCollide=false;r.CFrame=mR.CFrame*CF(0,0,-3);local hd=m:FindFirstChild("Head");if hd then hd.CanCollide=false;hd.CFrame=mR.CFrame*CF(0,1,-3)end end end end end end end;if(Cfg.Spinbot or iR)and c then local r=c:FindFirstChild("HumanoidRootPart");if r then local j=r:FindFirstChild("RootJoint")or(c:FindFirstChild("LowerTorso")and c.LowerTorso:FindFirstChild("Root"));if j then if not W.OC0[j]then W.OC0[j]=j.C0 end;local sS=tonumber(Cfg.SpinbotSpeed)or 50;W.SBA=(W.SBA+(dT*sS*10))%360;j.C0=W.OC0[j]*CFA(0,m_rad(W.SBA),0)end end;local uT=c:FindFirstChild("UpperTorso");local pA=Cfg.SpinbotLookUp and m_rad(70)or m_rad(-70);if uT then local ws=uT:FindFirstChild("Waist");if ws then if not W.OC0[ws]then W.OC0[ws]=ws.C0 end;ws.C0=W.OC0[ws]*CFA(pA,0,0)end end;local hd=c:FindFirstChild("Head");if hd then local nk=hd:FindFirstChild("Neck")or(c:FindFirstChild("Torso")and c.Torso:FindFirstChild("Neck"));if nk then if not W.OC0[nk]then W.OC0[nk]=nk.C0 end;nk.C0=W.OC0[nk]*CFA(pA,0,0)end end else if c then local r=c:FindFirstChild("HumanoidRootPart");if r then local j=r:FindFirstChild("RootJoint")or(c:FindFirstChild("LowerTorso")and c.LowerTorso:FindFirstChild("Root"));if j and W.OC0[j]then j.C0=W.OC0[j];W.OC0[j]=nil end end;local uT=c:FindFirstChild("UpperTorso");if uT then local ws=uT:FindFirstChild("Waist");if ws and W.OC0[ws]then ws.C0=W.OC0[ws];W.OC0[ws]=nil end end;local nk=c:FindFirstChild("Head")and c.Head:FindFirstChild("Neck")or(c:FindFirstChild("Torso")and c.Torso:FindFirstChild("Neck"));if nk and W.OC0[nk]then nk.C0=W.OC0[nk];W.OC0[nk]=nil end end end;if CFldr then for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local r=m:FindFirstChild("HumanoidRootPart");local hd=m:FindFirstChild("Head");if Cfg.Backtrack and r and hd then if not W.BH[m]then W.BH[m]={}end;local bP={};for _,p in pairs(m:GetChildren())do if p:IsA("BasePart") then bP[p.Name]=p.CFrame end end;t_ins(W.BH[m],1,{Time=nw,HeadPos=hd.Position,RootPos=r.Position,Parts=bP});for i=#W.BH[m],1,-1 do if nw-W.BH[m][i].Time>1 then table.remove(W.BH[m],i)end end end;local tPN=Cfg.TargetPartMode or"Head";local hP=m:FindFirstChild(tPN);if hP and hP:IsA("BasePart")then if not W.OHS[hP]then W.OHS[hP]=hP.Size end;if Cfg.HitboxExpander then local s=tonumber(Cfg.HitboxSize)or 2;hP.Size=V3(s,s,s);hP.Transparency=(tonumber(Cfg.HitboxTransparency)or 50)/100;hP.CanCollide=false else if hP.Size~=W.OHS[hP]then hP.Size=W.OHS[hP];hP.Transparency=0 end end end end end end end;if c then if Cfg.TPS then for _,p in pairs(c:GetDescendants())do if p:IsA("BasePart")and p.Name~="HumanoidRootPart"then p.LocalTransparencyModifier=0 end end;LP.CameraMode=Enum.CameraMode.Classic;Cam.CFrame=Cam.CFrame*CF(0,0,tonumber(Cfg.TPSDistance)or 8);for _,ch in pairs(Cam:GetChildren())do if ch:IsA("Model")then for _,p in pairs(ch:GetDescendants())do if p:IsA("BasePart")then p.LocalTransparencyModifier=1 end end end end else LP.CameraMode=Enum.CameraMode.LockFirstPerson;for _,ch in pairs(Cam:GetChildren())do if ch:IsA("Model")then for _,p in pairs(ch:GetDescendants())do if p:IsA("BasePart")then p.LocalTransparencyModifier=0 end end end end end;if c:FindFirstChild("Humanoid") then 
+    local hu = c.Humanoid;
+    local hr = c:FindFirstChild("HumanoidRootPart");
+    local iA = hr and hr.Anchored or false;
+    
+    -- Mobil sanal joystick veya PC WASD yönünü otomatik algılar (Kamera açısına göre)
+    local dr = hu.MoveDirection; 
+    local iTM = dr.Magnitude > 0;
+    
+    -- Mobilde joystick'i ittiriyorsan otomatik zıpla, PC'deysen space tuşuna basılı tutuyorsan zıpla
+    local wantsToJump = (isMob and iTM) or UIS:IsKeyDown(Enum.KeyCode.Space)
+    
+    if not iA then 
+        if Cfg.MovementEnabled then 
+            hu.WalkSpeed = tonumber(Cfg.SpeedValue) or 16;
+            hu.UseJumpPower = true;
+            hu.JumpPower = tonumber(Cfg.JumpPower) or 25 
+        end;
+        
+        -- Zemin havadayken işlemi kes, yerdeyken Bhop at
+        if Cfg.Bhop and wantsToJump and iTM then 
+            if hu.FloorMaterial ~= Enum.Material.Air then 
+                hu.Jump = true 
+            end 
+        end;
+        
+        -- Havada Air Strafe işlemi
+        if Cfg.AirStrafe and (hu:GetState() == Enum.HumanoidStateType.Freefall or hu.FloorMaterial == Enum.Material.Air) then 
+            if iTM then 
+                local aS = tonumber(Cfg.AirStrafeSpeed) or 50;
+                local cV = hr.AssemblyLinearVelocity;
+                
+                -- MoveDirection zaten doğru vector'u verdiği için hesaplamaya gerek kalmadı
+                hr.AssemblyLinearVelocity = V3(dr.X * aS, cV.Y, dr.Z * aS)
+            end 
         end 
-    end
-    
-    -- Bel ve Boyun bükme işlemleri setTargetRotation hatasını tetiklediği için sadeleştirildi
-    local lookAngle = Cfg.SpinbotLookUp and 1.2 or -1.2
-    local uT = c:FindFirstChild("UpperTorso")
-    if uT and uT:FindFirstChild("Waist") then
-        local ws = uT.Waist
-        if not W.OC0[ws] then W.OC0[ws] = ws.C0 end
-        ws.C0 = W.OC0[ws] * CFA(lookAngle, 0, 0)
-    end
-    
-    local hd = c:FindFirstChild("Head")
-    if hd then
-        local nk = hd:FindFirstChild("Neck") or (c:FindFirstChild("Torso") and c.Torso:FindFirstChild("Neck"))
-        if nk then
-            if not W.OC0[nk] then W.OC0[nk] = nk.C0 end
-            nk.C0 = W.OC0[nk] * CFA(lookAngle, 0, 0)
-        end
-    end
-else 
-    -- Spinbot kapatıldığında eklemleri orijinal haline güvenlice döndür
-    if W.OC0 and next(W.OC0) then
-        for joint, originalC0 in pairs(W.OC0) do
-            pcall(function() if joint and joint.Parent then joint.C0 = originalC0 end end)
-        end
-        W.OC0 = {} -- Tabloyu temizle
-    end
-endif CFldr then for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local r=m:FindFirstChild("HumanoidRootPart");local hd=m:FindFirstChild("Head");if Cfg.Backtrack and r and hd then if not W.BH[m]then W.BH[m]={}end;local bP={};for _,p in pairs(m:GetChildren())do if p:IsA("BasePart") then bP[p.Name]=p.CFrame end end;t_ins(W.BH[m],1,{Time=nw,HeadPos=hd.Position,RootPos=r.Position,Parts=bP});for i=#W.BH[m],1,-1 do if nw-W.BH[m][i].Time>1 then table.remove(W.BH[m],i)end end end;local tPN=Cfg.TargetPartMode or"Head";local hP=m:FindFirstChild(tPN);if hP and hP:IsA("BasePart")then if not W.OHS[hP]then W.OHS[hP]=hP.Size end;if Cfg.HitboxExpander then local s=tonumber(Cfg.HitboxSize)or 2;hP.Size=V3(s,s,s);hP.Transparency=(tonumber(Cfg.HitboxTransparency)or 50)/100;hP.CanCollide=false else if hP.Size~=W.OHS[hP]then hP.Size=W.OHS[hP];hP.Transparency=0 end end end end end end end;if c then if Cfg.TPS then for _,p in pairs(c:GetDescendants())do if p:IsA("BasePart")and p.Name~="HumanoidRootPart"then p.LocalTransparencyModifier=0 end end;LP.CameraMode=Enum.CameraMode.Classic;Cam.CFrame=Cam.CFrame*CF(0,0,tonumber(Cfg.TPSDistance)or 8);for _,ch in pairs(Cam:GetChildren())do if ch:IsA("Model")then for _,p in pairs(ch:GetDescendants())do if p:IsA("BasePart")then p.LocalTransparencyModifier=1 end end end end else LP.CameraMode=Enum.CameraMode.LockFirstPerson;for _,ch in pairs(Cam:GetChildren())do if ch:IsA("Model")then for _,p in pairs(ch:GetDescendants())do if p:IsA("BasePart")then p.LocalTransparencyModifier=0 end end end end end;if c:FindFirstChild("Humanoid")then local hu=c.Humanoid;local hr=c:FindFirstChild("HumanoidRootPart");local iA=hr and hr.Anchored or false;local iTM=UIS:IsKeyDown(Enum.KeyCode.W)or UIS:IsKeyDown(Enum.KeyCode.A)or UIS:IsKeyDown(Enum.KeyCode.S)or UIS:IsKeyDown(Enum.KeyCode.D);if not iA then if Cfg.MovementEnabled then hu.WalkSpeed=tonumber(Cfg.SpeedValue)or 16;hu.UseJumpPower=true;hu.JumpPower=tonumber(Cfg.JumpPower)or 25 end;if Cfg.Bhop and UIS:IsKeyDown(Enum.KeyCode.Space)and iTM then if hu.FloorMaterial~=Enum.Material.Air then hu.Jump=true end end;if Cfg.AirStrafe and(hu:GetState()==Enum.HumanoidStateType.Freefall or hu.FloorMaterial==Enum.Material.Air)then local lk=Cam.CFrame.LookVector;local rt=Cam.CFrame.RightVector;local dr=V3(0,0,0);if UIS:IsKeyDown(Enum.KeyCode.W)then dr=dr+lk end;if UIS:IsKeyDown(Enum.KeyCode.S)then dr=dr-lk end;if UIS:IsKeyDown(Enum.KeyCode.A)then dr=dr-rt end;if UIS:IsKeyDown(Enum.KeyCode.D)then dr=dr+rt end;dr=V3(dr.X,0,dr.Z);if dr.Magnitude>0 then dr=dr.Unit;local aS=tonumber(Cfg.AirStrafeSpeed)or 50;local cV=hr.AssemblyLinearVelocity;hr.AssemblyLinearVelocity=V3(dr.X*aS,cV.Y,dr.Z*aS)end end end end end;if Cfg.AntiFlash then L.ExposureCompensation=0;for _,v in pairs(L:GetChildren())do if v:IsA("ColorCorrectionEffect")and(s_find(s_low(v.Name),"flash")or v.TintColor==C3(1,1,1))then v.Enabled=false end end;local pG=LP:FindFirstChild("PlayerGui");if pG then for _,g in pairs(pG:GetChildren())do if s_find(s_low(g.Name),"flash")or s_find(s_low(g.Name),"blind")then g:Destroy()end end end end;if Cfg.NightMode then local cc=Cam:FindFirstChild("WyvernNight");if not cc then cc=Instance.new("ColorCorrectionEffect");cc.Name="WyvernNight";cc.Parent=Cam end;cc.TintColor=C3R(100,100,160);cc.Brightness=-0.15;cc.Contrast=0.2;cc.Enabled=true else local cc=Cam:FindFirstChild("WyvernNight");if cc then cc:Destroy()end end;if Cfg.RainbowSky then local h=tick()%5/5;local rc=C3H(h,1,1);L.Ambient=rc;L.OutdoorAmbient=rc;L.ColorShift_Top=rc;L.ColorShift_Bottom=rc;L.GlobalShadows=false;local atm=L:FindFirstChildOfClass("Atmosphere");if atm then atm.Color=rc;atm.Decay=rc end;L.FogColor=rc end;if Cfg.VMChams then local cCS=Cfg.VMChamsColor or"White";local vC=CMap[cCS]or C3R(255,255,255);if Cfg.RainbowVM then vC=C3H(tick()%5/5,1,1)end;local vT=(tonumber(Cfg.VMChamsTransparency)or 30)/100;for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")and(o:FindFirstChild("Weapon")or o:FindFirstChild("Right Arm")or o:FindFirstChild("AnimationController"))then local hl=o:FindFirstChild("WyvernVMChams");if not hl then hl=Instance.new("Highlight");hl.Name="WyvernVMChams";hl.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;hl.Parent=o end;hl.FillColor=vC;hl.OutlineColor=vC;hl.FillTransparency=vT;hl.OutlineTransparency=0;hl.Enabled=true end end else for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")then local hl=o:FindFirstChild("WyvernVMChams");if hl then hl.Enabled=false end end end end;W.eT=W.eT+dT;if W.eT>=W.EUR then UESP();W.eT=0 end;if UI.SFOV then UI.SFOV.Position=U2(0,cP.X,0,cP.Y);local r=tonumber(Cfg.FOV)or 150;UI.SFOV.Size=U2(0,r*2,0,r*2);if(Cfg.SilentEnabled or iR)and Cfg.ShowFOV then UI.SFOV.Visible=true;local tIF=GT(iR and 9999 or r);if tIF then sfS.Color=C3R(255,50,50)else sfS.Color=Th.MC end else UI.SFOV.Visible=false end end;if UI.AFOV then UI.AFOV.Position=U2(0,cP.X,0,cP.Y);local r=tonumber(Cfg.AimFOV)or 150;UI.AFOV.Size=U2(0,r*2,0,r*2);if Cfg.Aimlock then UI.AFOV.Visible=true else UI.AFOV.Visible=false end end;if UI.TTF and UI.TTF.Visible then local mL=UIS:GetMouseLocation();UI.TTF.Position=U2(0,mL.X+15,0,mL.Y-10)end;if Cfg.AutoShoot and(Cfg.SilentEnabled or iR)then 
+    end 
+end end;if Cfg.AntiFlash then L.ExposureCompensation=0;for _,v in pairs(L:GetChildren())do if v:IsA("ColorCorrectionEffect")and(s_find(s_low(v.Name),"flash")or v.TintColor==C3(1,1,1))then v.Enabled=false end end;local pG=LP:FindFirstChild("PlayerGui");if pG then for _,g in pairs(pG:GetChildren())do if s_find(s_low(g.Name),"flash")or s_find(s_low(g.Name),"blind")then g:Destroy()end end end end;if Cfg.NightMode then local cc=Cam:FindFirstChild("WyvernNight");if not cc then cc=Instance.new("ColorCorrectionEffect");cc.Name="WyvernNight";cc.Parent=Cam end;cc.TintColor=C3R(100,100,160);cc.Brightness=-0.15;cc.Contrast=0.2;cc.Enabled=true else local cc=Cam:FindFirstChild("WyvernNight");if cc then cc:Destroy()end end;if Cfg.RainbowSky then local h=tick()%5/5;local rc=C3H(h,1,1);L.Ambient=rc;L.OutdoorAmbient=rc;L.ColorShift_Top=rc;L.ColorShift_Bottom=rc;L.GlobalShadows=false;local atm=L:FindFirstChildOfClass("Atmosphere");if atm then atm.Color=rc;atm.Decay=rc end;L.FogColor=rc end;if Cfg.VMChams then local cCS=Cfg.VMChamsColor or"White";local vC=CMap[cCS]or C3R(255,255,255);if Cfg.RainbowVM then vC=C3H(tick()%5/5,1,1)end;local vT=(tonumber(Cfg.VMChamsTransparency)or 30)/100;for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")and(o:FindFirstChild("Weapon")or o:FindFirstChild("Right Arm")or o:FindFirstChild("AnimationController"))then local hl=o:FindFirstChild("WyvernVMChams");if not hl then hl=Instance.new("Highlight");hl.Name="WyvernVMChams";hl.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;hl.Parent=o end;hl.FillColor=vC;hl.OutlineColor=vC;hl.FillTransparency=vT;hl.OutlineTransparency=0;hl.Enabled=true end end else for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")then local hl=o:FindFirstChild("WyvernVMChams");if hl then hl.Enabled=false end end end end;W.eT=W.eT+dT;if W.eT>=W.EUR then UESP();W.eT=0 end;if UI.SFOV then UI.SFOV.Position=U2(0,cP.X,0,cP.Y);local r=tonumber(Cfg.FOV)or 150;UI.SFOV.Size=U2(0,r*2,0,r*2);if(Cfg.SilentEnabled or iR)and Cfg.ShowFOV then UI.SFOV.Visible=true;local tIF=GT(iR and 9999 or r);if tIF then sfS.Color=C3R(255,50,50)else sfS.Color=Th.MC end else UI.SFOV.Visible=false end end;if UI.AFOV then UI.AFOV.Position=U2(0,cP.X,0,cP.Y);local r=tonumber(Cfg.AimFOV)or 150;UI.AFOV.Size=U2(0,r*2,0,r*2);if Cfg.Aimlock then UI.AFOV.Visible=true else UI.AFOV.Visible=false end end;if UI.TTF and UI.TTF.Visible then local mL=UIS:GetMouseLocation();UI.TTF.Position=U2(0,mL.X+15,0,mL.Y-10)end;if Cfg.AutoShoot and(Cfg.SilentEnabled or iR)then 
     local fC=(Cfg.SilentEnabled or iR)and(tonumber(Cfg.FOV)or 150)or 15;
     if iR then fC=9999 end;
     local t=GT(fC);
@@ -762,35 +755,31 @@ local function UpdateHUD(g)
     pG.DescendantAdded:Connect(HandleNewGUI)
 end)
 
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local W_SNI = mt.__newindex
-
-hookfunction(W_SNI, newcclosure(function(t, k, v)
+local oldNewIndex
+oldNewIndex = hookmetamethod(game, "__newindex", newcclosure(function(t, k, v)
     if not checkcaller() and k == "Text" and typeof(t) == "Instance" and t:IsA("TextLabel") then
         if type(v) == "string" then
             local cv = string.lower(v)
-            if string.find(cv, "zeus") or string.find(cv, "taser") then return W_SNI(t, k, v) end
+            if string.find(cv, "zeus") or string.find(cv, "taser") then return oldNewIndex(t, k, v) end
             
             if string.find(cv, "knife") or cv == "melee" or cv == "baseknife" or cv == "bıçak" or cv == "bicak" then
                 local tk = Cfg.TargetKnife or W.TK or "Karambit"
                 if tk and tk ~= "" then
-                    return W_SNI(t, k, tk)
+                    return oldNewIndex(t, k, tk)
                 end
             else
                 if Cfg.ActiveGunSkins then
                     for wName, sName in pairs(Cfg.ActiveGunSkins) do
                         if cv == string.lower(wName) then
-                            return W_SNI(t, k, wName .. " | " .. sName)
+                            return oldNewIndex(t, k, wName .. " | " .. sName)
                         end
                     end
                 end
             end
         end
     end
-    return W_SNI(t, k, v)
+    return oldNewIndex(t, k, v)
 end))
-setreadonly(mt, true)
 local function ALC(m)if not m or not m:IsA("Model")then return end;for _,p in pairs(m:GetDescendants())do if p:IsA("BasePart")or p:IsA("MeshPart")then if p.Name=="Hitbox"or p.Name=="bounds"or p.Transparency>=1 then continue end;local function FR()if not Cfg.VMChams then return end;local vC=CMap[Cfg.VMChamsColor or"White"]or C3R(255,255,255);if Cfg.RainbowVM then vC=C3H(tick()%5/5,1,1)end;if p.Material~=Enum.Material.Neon then p.Material=Enum.Material.Neon end;if p.Color~=vC then p.Color=vC end;if p.Transparency~=0 then p.Transparency=0 end end;p:GetPropertyChangedSignal("Material"):Connect(FR);p:GetPropertyChangedSignal("Color"):Connect(FR);p:GetPropertyChangedSignal("Transparency"):Connect(FR);FR()end end end;Cam.ChildAdded:Connect(function(c)if c:IsA("Model")then task.wait(0.1);ALC(c)end end);for _,o in pairs(Cam:GetChildren())do if o:IsA("Model")then ALC(o)end end
 game:GetService("Players").PlayerRemoving:Connect(function(p)pcall(function()local cM=CFldr:FindFirstChild(p.Name,true);if cM then W.BH[cM]=nil;if W.VC then W.VC[cM]=nil end end end)end)
 -- // WYVERN BULLETPROOF KNIFE & GLOVE HOOK BAŞLANGICI //
