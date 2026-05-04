@@ -453,7 +453,38 @@ local function GAP()
         return UIS:GetMouseLocation()
     end
 end
-local function GCT()local c=nil;local s=tonumber(Cfg.AimFOV)or 150;local aP=GAP();if not CFldr then return nil end;local cP=Cam.CFrame.Position;for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m.Name~=LP.Name then local h=m:FindFirstChild(Cfg.TargetPartMode)or m:FindFirstChild("Head");if not ITe(m)and h then local hu=m:FindFirstChildOfClass("Humanoid");if hu and hu.Health>0 then local po,oS=Cam:WorldToViewportPoint(h.Position);if oS then local d=(Vector2.new(po.X,po.Y)-aP).SqrMagnitude;if d<s then if Cfg.AimWallCheck then if IVis(h,true)then c=h;s=d end else c=h;s=d end end end end end end end end;return c end
+local function GCT()
+    local c=nil;
+    local s=tonumber(Cfg.AimFOV)or 150;
+    local aP=GAP();
+    if not CFldr then return nil end;
+    local cP=Cam.CFrame.Position;
+    for _,f in pairs(CFldr:GetChildren())do 
+        for _,m in pairs(f:GetChildren())do 
+            if m.Name~=LP.Name then 
+                local h=m:FindFirstChild(Cfg.TargetPartMode)or m:FindFirstChild("Head");
+                if not ITe(m)and h then 
+                    local hu=m:FindFirstChildOfClass("Humanoid");
+                    if hu and hu.Health>0 then 
+                        local po,oS=Cam:WorldToViewportPoint(h.Position);
+                        if oS then 
+                            -- SqrMagnitude yerine Magnitude kullanıldı!
+                            local d=(Vector2.new(po.X,po.Y)-aP).Magnitude;
+                            if d<s then 
+                                if Cfg.AimWallCheck then 
+                                    if IVis(h,true)then c=h;s=d end 
+                                else 
+                                    c=h;s=d 
+                                end 
+                            end 
+                        end 
+                    end 
+                end 
+            end 
+        end 
+    end;
+    return c 
+end
 local function GT(tF)if not CFldr then return nil end;local iR=Cfg.RageMode;local i3=iR or Cfg.FullFOV360;local iW=iR or Cfg.Wallbang;local cP=Cam.CFrame.Position;if i3 then local b,bD=nil,math.huge;local mC=LP.Character;local mR=mC and mC:FindFirstChild("HumanoidRootPart");if not mR then return nil end;for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local hu=m:FindFirstChildOfClass("Humanoid");local p=m:FindFirstChild(Cfg.TargetPartMode)or m:FindFirstChild("Head");if hu and hu.Health>0 and p then if not iW then if not IVis(p,true)then continue end end;local d=(p.Position-mR.Position).Magnitude;local sc=d;if Cfg.SmartTargeting then local hR=hu.Health/hu.MaxHealth;local d3=(cP-p.Position).Magnitude;sc=(d*0.4)+(hR*100)+(d3*0.2);if not IVis(p,true)then sc=sc+500 end end;if sc<bD then bD=sc;b={Part=p}end end end end end;return b end;local aP=GAP();local b,bD=nil,tF;for _,f in pairs(CFldr:GetChildren())do for _,m in pairs(f:GetChildren())do if m:IsA("Model")and m.Name~=LP.Name and not ITe(m)then local hu=m:FindFirstChildOfClass("Humanoid");local p=m:FindFirstChild(Cfg.TargetPartMode)or m:FindFirstChild("Head");if hu and hu.Health>0 and p then if not iW then if not IVis(p,true)then continue end end;local po,oS=Cam:WorldToViewportPoint(p.Position);if oS then local d=(V2(po.X,po.Y)-aP).Magnitude;local sc=d;if Cfg.SmartTargeting then local hR=hu.Health/hu.MaxHealth;local d3=(cP-p.Position).Magnitude;sc=(d*0.4)+(hR*100)+(d3*0.2);if not IVis(p,true)then sc=sc+500 end end;if sc<bD then bD=sc;b={Part=p}end end end end end end;return b end
 local function RG()local u1,u2=m_random(),m_random();local z0=math.sqrt(-2*math.log(u1))*math.cos(2*math.pi*u2);return z0/3 end
 t_spawn(function()local SR;while not SR do pcall(function()SR=require(RS.Database.Security.Remotes).Inventory.ShootWeapon end);t_wait(1)end;local oS;local RLT=0;local function bh(o,d,tP,p,sP)local tPo=sP or tP.Position;local mD=(tPo-o).Magnitude;local h={};local ex={LP.Character,Cam};local cP=o;local pU=0;local wp=RaycastParams.new();wp.FilterType=Enum.RaycastFilterType.Exclude;local ep=RaycastParams.new();ep.FilterType=Enum.RaycastFilterType.Include;for i=1,4 do wp.FilterDescendantsInstances=ex;local ht=WS:Raycast(cP,d*mD,wp);if not ht then break end;if ht.Instance:FindFirstAncestorWhichIsA("Model")and ht.Instance.Parent:FindFirstChildOfClass("Humanoid")then break end;t_ins(h,{Instance=ht.Instance,Position=ht.Position,Normal=ht.Normal,Material=ht.Material.Name,Distance=(ht.Position-cP).Magnitude,Exit=false});ep.FilterDescendantsInstances={ht.Instance};local eH=WS:Raycast(ht.Position+d*10,-d*11,ep);if eH then local tC=(eH.Position-ht.Position).Magnitude;pU=pU+tC;if pU>p then break end;t_ins(h,{Instance=eH.Instance,Position=eH.Position,Normal=eH.Normal,Material=ht.Material.Name,Distance=tC,Exit=true});cP=eH.Position+d*0.01 else break end;t_ins(ex,ht.Instance)end;t_ins(h,{Instance=tP,Position=tPo,Normal=-d,Material=tP.Material.Name,Distance=(tPo-cP).Magnitude,Exit=false});return h end
